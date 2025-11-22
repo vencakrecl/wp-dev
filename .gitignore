@@ -4,3 +4,5 @@
 # APP
 vendor/
 dist
+.phpunit.cache
+.php-cs-fixer.cache
