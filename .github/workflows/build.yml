@@ -4,8 +4,6 @@ on:
     push:
         branches:
             - main
-        tags:
-            - '*'
     workflow_dispatch:
 
 jobs:
@@ -35,3 +33,8 @@ jobs:
                 with:
                     name: wp-dev
                     path: dist/wp-dev.phar
+
+            -   name: Create Release
+                uses: softprops/action-gh-release@v2
+                with:
+                    files: dist/wp-dev.phar
