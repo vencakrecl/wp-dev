@@ -1,0 +1,52 @@
+name: Docker Image CI
+
+on:
+    push:
+        branches:
+            - main
+        tags:
+            - "*"
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+jobs:
+
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v6
+
+            -   name: Set up PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 'latest'
+                    tools: composer
+                    extensions: phar
+
+            -   name: Install dependencies
+                run: composer install --no-progress --prefer-dist --no-dev
+
+            -   name: Build PHAR
+                run: composer build-phar
+
+            -   name: Archive phar
+                uses: actions/upload-artifact@v4
+                with:
+                    name: wp-dev
+                    path: dist/wp-dev.phar
+
+            -   name: Create Release
+                uses: softprops/action-gh-release@v2
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    tag_name: latest
+                    files: dist/wp-dev.phar
+                    token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+                    make_latest: false
+                    draft: false
+                    prerelease: false
