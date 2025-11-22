@@ -8,6 +8,9 @@ on:
             - "*"
     workflow_dispatch:
 
+permissions:
+    contents: write
+
 jobs:
 
     build:
@@ -41,3 +44,4 @@ jobs:
                 if: github.ref_type == 'tag'
                 with:
                     files: dist/wp-dev.phar
+                    token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
