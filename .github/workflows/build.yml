@@ -47,3 +47,4 @@ jobs:
                 with:
                     files: dist/wp-dev.phar
                     token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+                    make_latest: true
