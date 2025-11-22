@@ -41,10 +41,12 @@ jobs:
 
             -   name: Create Release
                 uses: softprops/action-gh-release@v2
-                if: github.ref_type == 'tag'
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:
+                    tag_name: latest
                     files: dist/wp-dev.phar
                     token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
                     make_latest: true
+                    draft: false,
+                    prerelease: false
