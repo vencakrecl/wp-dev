@@ -1,0 +1,27 @@
+{
+    "name": "vencakrecl/wp-dev",
+    "description": "Wordpress DEV tools",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Venca Krecl",
+            "email": "venca.email@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "symfony/console": "^7.3"
+    },
+    "require-dev": {
+        "ext-phar": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WpDev\\": "src/"
+        }
+    },
+    "scripts": {
+        "build-phar": "php -d phar.readonly=false bin/build.php",
+        "run-phar": "php dist/wp-dev.phar"
+    }
+}
