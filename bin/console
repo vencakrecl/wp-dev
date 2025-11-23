@@ -1,0 +1,65 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$cmd = new Command('build')
+    ->addArgument('version', InputArgument::OPTIONAL, 'Version to build', default: 'latest')
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+        $version = $input->getArgument('version');
+
+        $output->writeln("PHAR creating for version: $version");
+
+        $distDir = __DIR__.'/../dist';
+        $pharFile = $distDir . '/wp-dev.phar';
+
+        // Create dist folder
+        if (!is_dir($distDir)) {
+            mkdir($distDir);
+        }
+
+        // Remove old phar if exists
+        if (file_exists($pharFile)) {
+            unlink($pharFile);
+        }
+
+        $phar = new Phar($pharFile);
+        $phar->startBuffering();
+
+        // Add all files
+        $it = new AppendIterator();
+        $it->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/../src')));
+        $it->append(new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/../vendor')));
+
+        /** @var SplFileInfo $file */
+        foreach ($it as $file) {
+            if ($file->isFile()) {
+                $phar->addFile($file->getRealPath(), str_replace(dirname(__DIR__), '', $file->getRealPath()));
+            }
+        }
+
+        $phar->addFile(__DIR__.'/wp-dev', 'bin/wp-dev');
+        $phar->addFromString('config/version', $version);
+
+        // Set the default stub (entry point)
+        $stub = $phar->createDefaultStub('bin/wp-dev');
+        $phar->setStub($stub);
+
+        // Compress files
+        $phar->compressFiles(Phar::GZ);
+
+        $phar->stopBuffering();
+
+        $output->writeln("PHAR created: $pharFile");
+    });
+
+$app = new Application('wp-dev-build');
+$app->add($cmd);
+
+$app->run();

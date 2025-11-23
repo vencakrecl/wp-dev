@@ -1,12 +1,10 @@
-name: Docker Image CI
+name: WP DEV build
 
 on:
+    pull_request:
     push:
         branches:
             - main
-        tags:
-            - "*"
-    workflow_dispatch:
 
 permissions:
     contents: write
@@ -28,10 +26,19 @@ jobs:
                     extensions: phar
 
             -   name: Install dependencies
-                run: composer install --no-progress --prefer-dist --no-dev
+                run: composer install --no-progress --prefer-dist
+
+            -   name: Lint
+                run: composer lint
+
+            -   name: PHPStan
+                run: composer phpstan
+
+            -   name: PHPUnit
+                run: composer test:unit
 
             -   name: Build PHAR
-                run: composer build-phar
+                run: composer build:phar
 
             -   name: Archive phar
                 uses: actions/upload-artifact@v4
@@ -41,6 +48,7 @@ jobs:
 
             -   name: Create Release
                 uses: softprops/action-gh-release@v2
+                #if: github.ref == 'refs/heads/main'
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 with:

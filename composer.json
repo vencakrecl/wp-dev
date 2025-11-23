@@ -10,18 +10,34 @@
     ],
     "require": {
         "php": ">=8.4",
+        "ext-phar": "*",
         "symfony/console": "^7.3"
     },
     "require-dev": {
-        "ext-phar": "*"
+        "phpunit/phpunit": "^12.4",
+        "friendsofphp/php-cs-fixer": "^3.90",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {
             "WpDev\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
-        "build-phar": "php -d phar.readonly=false bin/build.php",
-        "run-phar": "php dist/wp-dev.phar"
+        "lint": "XDEBUG_MODE=off php-cs-fixer check",
+        "lint:fix": "XDEBUG_MODE=off php-cs-fixer fix",
+        "phpstan": "vendor/bin/phpstan analyse --level 7 src tests",
+        "test:unit": "vendor/bin/phpunit",
+        "build:phar": [
+            "composer install --no-dev",
+            "composer dump-autoload --strict-psr --no-dev --optimize",
+            "php -d phar.readonly=false bin/console build"
+        ],
+        "run:phar": "php dist/wp-dev.phar"
     }
 }
