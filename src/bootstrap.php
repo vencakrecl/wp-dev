@@ -11,6 +11,6 @@ if (file_exists(__DIR__.'/../config/version')) {
 }
 
 $app = new Application('wp-dev', false === $version ? 'latest' : $version);
-$app->add(new InitConfigCommand());
+$app->addCommand(new InitConfigCommand());
 
 $app->run();
