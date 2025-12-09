@@ -11,7 +11,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $cmd = new Command('build')
     ->addArgument('version', InputArgument::OPTIONAL, 'Version to build', default: 'latest')
-    ->setCode(function (InputInterface $input, OutputInterface $output) {
+    ->setCode(function (InputInterface $input, OutputInterface $output): int {
         $version = $input->getArgument('version');
 
         $output->writeln("PHAR creating for version: $version");
@@ -57,9 +57,11 @@ $cmd = new Command('build')
         $phar->stopBuffering();
 
         $output->writeln("PHAR created: $pharFile");
+
+        return Command::SUCCESS;
     });
 
 $app = new Application('wp-dev-build');
-$app->add($cmd);
+$app->addCommand($cmd);
 
 $app->run();

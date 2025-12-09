@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'config:init')]
 class InitConfigCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file path');
     }
