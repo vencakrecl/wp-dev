@@ -1,0 +1,16 @@
+parameters:
+    level: max
+    paths:
+        - castor.php
+        - src
+        - build
+        - tests
+    tmpDir: tmp/phpstan
+    excludePaths:
+        analyseAndScan:
+            - src/*.stub.php
+            - build/*.stub.php
+    scanFiles:
+        - .castor.stub.php
+    typeAliases:
+        ContextData: 'array{wp: string, config: WPDev\Config}'

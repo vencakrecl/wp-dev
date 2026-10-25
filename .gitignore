@@ -7,3 +7,9 @@
 
 # AI
 .claude/settings.local.json
+
+# APP
+/tmp/
+/dist/
+.castor.stub.php
+vendor/
