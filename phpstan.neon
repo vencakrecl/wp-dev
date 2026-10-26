@@ -1,0 +1,12 @@
+parameters:
+    level: max
+    paths:
+        - castor.php
+        - src
+        - build
+        - tests
+    tmpDir: tmp/phpstan
+    scanFiles:
+        - .castor.stub.php
+    typeAliases:
+        ContextData: 'array{wp: string, config: WPDev\Config}'

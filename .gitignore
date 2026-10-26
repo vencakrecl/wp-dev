@@ -7,3 +7,9 @@
 
 # AI
 .claude/settings.local.json
+
+# Build artifacts
+/tmp/
+/dist/
+/.castor.stub.php
+vendor/
