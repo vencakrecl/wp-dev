@@ -65,7 +65,9 @@ src/_context.php    # Default context and WP-CLI executable lookup
 src/_helpers.php    # Shared command execution helper
 src/Config.php      # Immutable application environment configuration
 build/castor.php    # Build application entry point
-build/tasks.php     # Packaging and compilation tasks
+build/build.php     # Packaging and compilation tasks
+build/_context.php  # Build context with the repository working directory
+build/_helpers.php  # OS and architecture detection
 build/quality.php   # Formatting, analysis, and tests
 ```
 
@@ -110,7 +112,8 @@ Application classes use Composer PSR-4 autoloading (`WPDev\` maps to `src/`).
 Tests use the development mapping `WPDev\Tests\` to `tests/`. Composer's `files`
 autoload loads shared context and helper functions. Castor mounts `src/` and
 `build/` to discover each application's tasks in its own working directory.
-Quality checks explicitly run from the repository root.
+Build tasks and quality checks use the named `build` context to run from the
+repository root. Composer's `autoload-dev.files` loads their context and helpers.
 The package preserves that directory layout and adds a small root task loader.
 Production Composer dependencies are installed in staging, preserving local dev dependencies.
 WP-CLI source code and build tooling are excluded from the executable.

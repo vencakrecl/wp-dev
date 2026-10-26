@@ -35,6 +35,10 @@
   "autoload-dev": {
     "psr-4": {
       "WPDev\\Tests\\": "tests/"
-    }
+    },
+    "files": [
+      "build/_context.php",
+      "build/_helpers.php"
+    ]
   }
 }

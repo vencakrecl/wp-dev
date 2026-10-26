@@ -18,18 +18,10 @@ function build(#[AsArgument] string $version = '0.1.0-dev'): void
     if (!preg_match('/^[0-9A-Za-z][0-9A-Za-z.+_-]*$/D', $version)) {
         throw new \InvalidArgumentException('Invalid version: use letters, numbers, dots, plus signs, underscores, or hyphens.');
     }
-    [$repackOs, $compileOs] = match (PHP_OS_FAMILY) {
-        'Darwin' => ['darwin', 'macos'],
-        'Linux' => ['linux', 'linux'],
-        default => throw new \RuntimeException('Build on macOS or Linux.'),
-    };
-    [$repackArch, $compileArch] = match (php_uname('m')) {
-        'arm64', 'aarch64' => ['arm64', 'aarch64'],
-        'x86_64', 'amd64' => ['amd64', 'x86_64'],
-        default => throw new \RuntimeException('Unsupported CPU architecture.'),
-    };
+    [$repackOs, $compileOs] = detect_os();
+    [$repackArch, $compileArch] = detect_arch();
 
-    $root = dirname(__DIR__);
+    $root = context('build')->workingDirectory;
     fs()->mkdir([$root.'/tmp', $root.'/dist']);
 
     $finder = new ExecutableFinder();
@@ -38,8 +30,7 @@ function build(#[AsArgument] string $version = '0.1.0-dev'): void
             throw new \RuntimeException('Missing build dependency: '.$tool.' (see README.md).');
         }
     }
-    $buildContext = context()
-        ->withWorkingDirectory($root)
+    $buildContext = context('build')
         ->withAllowFailure(false)
         ->withPty(false)
         ->withEnvironment([
